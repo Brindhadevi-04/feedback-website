@@ -4,6 +4,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "./App.css";
 
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function App() {
   const [feedback, setFeedback] = useState({
     q1: "",
@@ -23,17 +26,13 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Submitting Feedback:", feedback);
-
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/feedback",
+        `${API_URL}/api/feedback`,
         feedback
       );
 
-      console.log("Backend Response:", response.data);
-
-      alert("Feedback submitted successfully!");
+      alert(response.data.message || "Feedback submitted successfully!");
 
       setFeedback({
         q1: "",
@@ -42,18 +41,9 @@ function App() {
         q4: "",
         q5: "",
       });
-
     } catch (error) {
       console.error("Error submitting feedback:", error);
-
-      if (error.response) {
-        console.log("Status:", error.response.status);
-        console.log("Error Data:", error.response.data);
-      } else {
-        console.log("Connection Error:", error.message);
-      }
-
-      alert("Error submitting feedback!");
+      alert("Error submitting feedback! Please try again.");
     }
   };
 
@@ -106,15 +96,11 @@ function App() {
           required
         />
 
-        <button type="submit">
-          Submit Feedback
-        </button>
+        <button type="submit">Submit Feedback</button>
       </form>
 
       <div className="feedback-link">
-        <Link to="/getAllData">
-          View All Feedback
-        </Link>
+        <Link to="/getAllData">View All Feedback</Link>
       </div>
     </div>
   );
